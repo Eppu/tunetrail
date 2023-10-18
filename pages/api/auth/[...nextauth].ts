@@ -19,6 +19,7 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, account }: { token: any; account: any }) {
+      console.log('jwt is', token, account);
       if (account) {
         console.log('account is', account);
         token.id = account.id;
@@ -27,15 +28,7 @@ export const authOptions = {
       console.log('token set to', token);
       return token;
     },
-    async session({
-      session,
-      token,
-      user,
-    }: {
-      session: any;
-      token: any;
-      user: any;
-    }) {
+    async session({ session, token, user }: { session: any; token: any; user: any }) {
       console.log('session is', session);
       session.user.accessToken = token.accessToken;
       console.log('session set to', session);

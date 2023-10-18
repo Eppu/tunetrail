@@ -1,39 +1,97 @@
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import LoginButton from '@/components/login-btn';
+import SearchBar from '@/components/SearchBar';
+import { useSession } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const { data: session, status } = useSession();
+
+  console.log('session', session);
+
+  const handleSearch = async () => {
+    const query = 'coldplay'; // Replace with your search query
+    const type = 'artist'; // Replace with your search type
+
+    try {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query, type }),
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log('data', data);
+      } else if (response.status === 401) {
+        // Handle unauthorized access
+        console.error('Unauthorized access');
+      } else if (response.status === 405) {
+        // Handle method not allowed
+        console.error('Method not allowed');
+      } else {
+        // Handle other errors
+        console.error('Internal server error');
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error('Network error', error);
+    }
+  };
+
+  // const handleSearch = async (query: string, searchType: string) => {
+  //   console.log(query, searchType);
+
+  //   // search for results using the search endpoint
+  //   // Use fetch with the post method to send the query to the search endpoint
+  //   // The search endpoint is located at /api/search
+  //   // The search endpoint expects a JSON body with the following properties:
+  //   // - query: the search query
+  //   // - type: the type of search (either track or artist)
+
+  //   const results = await fetch('/api/search', {
+  //     method: 'POST',
+  //     body: JSON.stringify({
+  //       query: query,
+  //       type: searchType,
+  //     }),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   });
+
+  //   console.log('results', results);
+
+  //   // If the response is not okay, throw an error
+  //   // if (!results.ok) {
+  //   //   throw new Error('An error occurred while searching');
+  //   // }
+
+  //   // Otherwise, get the JSON from the response
+  //   const data = await results.json();
+
+  //   // Log the data
+  //   console.log(data);
+
+  //   // handle errors
+  // };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
+    <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
       <LoginButton />
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+      {/* <SearchBar onSearch={handleSearch} /> */}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          handleSearch();
+        }}
+      >
+        Search
+      </button>
 
       <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
         <Image
