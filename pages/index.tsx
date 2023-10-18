@@ -12,18 +12,18 @@ export default function Home() {
   console.log('session', session);
 
   const handleSearch = async () => {
+    if (!session) return;
+    const accessToken = (session.user as { accessToken: string }).accessToken; // Please don't do this. I'll fix it later.
     const query = 'coldplay'; // Replace with your search query
     const type = 'artist'; // Replace with your search type
 
     try {
-      const response = await fetch('/api/search', {
-        method: 'POST',
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=10`, {
+        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ query, type }),
       });
-
       if (response.status === 200) {
         const data = await response.json();
         console.log('data', data);
