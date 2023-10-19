@@ -1,12 +1,47 @@
 import NextAuth from 'next-auth/next';
 import SpotifyProvider from 'next-auth/providers/spotify';
 import type { Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import axios from 'axios';
+
+const SPOTIFY_REFRESH_TOKEN_URL = 'https://accounts.spotify.com/api/token';
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
+const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
+
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  try {
+    const basicAuth = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64');
+    const { data } = await axios.post(
+      SPOTIFY_REFRESH_TOKEN_URL,
+      {
+        grant_type: 'refresh_token',
+        refresh_token: token.refreshToken,
+      },
+      {
+        headers: {
+          Authorization: `Basic ${basicAuth}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
+    return {
+      ...token,
+      accessToken: data.access_token,
+      accessTokenExpires: Date.now() + data.expires_in * 1000,
+    };
+  } catch (error) {
+    return {
+      ...token,
+      error: 'RefreshAccessTokenError',
+    };
+  }
+}
 
 export const authOptions = {
   providers: [
     SpotifyProvider({
-      clientId: process.env.SPOTIFY_CLIENT_ID!,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+      clientId: SPOTIFY_CLIENT_ID,
+      clientSecret: SPOTIFY_CLIENT_SECRET,
       // get scopes:
       // user-read-email
       // user-read-private
@@ -18,28 +53,26 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account }: { token: any; account: any }) {
-      // console.log('jwt is', token, account);
-      if (account) {
-        console.log('account is', account);
-        token.id = account.id;
-        token.accessToken = account.access_token;
+    async jwt({ token, account, user }: { token: JWT; account: any; user: any }) {
+      if (account && user) {
+        return {
+          accessToken: account.access_token,
+          refreshToken: account.refresh_token,
+          accessTokenExpires: account.expires_at * 1000,
+          user,
+        };
       }
-      // console.log('token set to', token);
-      return token;
+      if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
+        return token;
+      }
+      const newToken = await refreshAccessToken(token);
+      return newToken;
     },
-    async session({
-      session,
-      token,
-      user,
-    }: {
-      session: any;
-      token: any;
-      user: any;
-    }) {
-      // console.log('session is', session);
-      session.user.accessToken = token.accessToken;
-      // console.log('session set to', session);
+    async session({ session, token }: { session: Session; token: JWT }) {
+      session.accessToken = token.accessToken;
+      session.error = token.error;
+      session.user = token.user;
+      console.log('session is:', session);
       return session;
     },
   },

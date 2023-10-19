@@ -5,12 +5,16 @@ import axios from 'axios';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
 
-  if (!session) {
+  console.log('recommendations session is:', session);
+
+  if (!session || !session.accessToken) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
 
-  const accessToken = (session.user as { accessToken: string }).accessToken; // Please don't do this. I'll fix it later.
+  const accessToken = session.accessToken;
+
+  console.log('recommendations accessToken is:', accessToken);
 
   try {
     // Define the request parameters for getting song recommendations
