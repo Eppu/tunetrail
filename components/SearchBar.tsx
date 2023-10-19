@@ -5,14 +5,40 @@ import { useSession } from 'next-auth/react';
 interface SearchComponentProps {
   // onSearch: (query: string, searchType: string) => void;
   // search results
-  onSelectItem?: (item: any) => void;
+  onSelectItem: (item: any, type: 'track' | 'artist') => void;
+  searchType: 'track' | 'artist';
 }
 
-const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
+const SearchBar: React.FC<SearchComponentProps> = ({
+  onSelectItem,
+  searchType,
+}) => {
   const { data: session, status } = useSession();
   const [query, setQuery] = useState<string>('');
-  const [searchType, setSearchType] = useState<string>('track'); // Default to searching for tracks
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  // const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<any>({});
+
+  const getTrackData = async () => {
+    const res = await fetch(`/api/search?query=${query}&type=track`);
+    const data = await res.json();
+    if (!res.ok) {
+      console.error(data);
+      return;
+    }
+    console.log(data);
+    return data;
+  };
+
+  const getArtistData = async () => {
+    const res = await fetch(`/api/search?query=${query}&type=artist`);
+    const data = await res.json();
+    if (!res.ok) {
+      console.error(data);
+      return;
+    }
+    console.log(data);
+    return data;
+  };
 
   const handleSearch = async () => {
     if (query.trim() === '') {
@@ -23,20 +49,13 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
     if (!session) return;
     console.log(query, searchType);
 
-    // Fetch results from /api/search with GET request. Then handle errors.
-    const res = await fetch(`/api/search?query=${query}&type=${searchType}`);
-    const data = await res.json();
-    if (!res.ok) {
-      console.error(data);
-      return;
-    }
-    console.log(data);
+    const data =
+      searchType === 'track' ? await getTrackData() : await getArtistData();
 
-    // get all the results from the items array. they can either be under tracks or artists
-    const results = data.tracks?.items || data.artists?.items || [];
-    setSearchResults(results);
-    console.log('search results: ', results);
-    return data;
+    console.log('got data!11', data);
+    if (!data) return;
+
+    setSearchResults(data);
   };
 
   return (
@@ -54,47 +73,40 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
           className="input input-bordered w-full max-w-xs"
         />
       </div>
-      <div>
-        <label>
-          <input
-            type="radio"
-            value="track"
-            checked={searchType === 'track'}
-            onChange={() => setSearchType('track')}
-          />
-          Track
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="artist"
-            checked={searchType === 'artist'}
-            onChange={() => setSearchType('artist')}
-          />
-          Artist
-        </label>
-      </div>
       <button className="btn" onClick={handleSearch}>
         Search
       </button>
-      {searchResults.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
-          {searchResults.map((item) => (
-            <div
-              key={item.id}
-              className="flex flex-col items-center justify-center"
-            >
-              <p className="text-center">{item.name}</p>
-              <button
-                className="btn btn-sm"
-                onClick={() => onSelectItem && onSelectItem(item)}
+      {Object.keys(searchResults).length !== 0 &&
+        (!!searchResults.tracks ? (
+          <div>
+            {searchResults.tracks.items.map((track: any) => (
+              <div
+                key={track.id}
+                onClick={() => {
+                  onSelectItem(track, searchType), setSearchResults({});
+                }}
+                className="flex flex-col items-center justify-center p-4 border border-gray-300 rounded-md cursor-pointer"
               >
-                Select
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+                <h2>{track.name}</h2>
+                <p>{track.artists[0].name}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>
+            {searchResults.artists.items.map((artist: any) => (
+              <div
+                key={artist.id}
+                onClick={() => {
+                  onSelectItem(artist, searchType), setSearchResults({});
+                }}
+                className="flex flex-col items-center justify-center p-4 border border-gray-300 rounded-md cursor-pointer"
+              >
+                <h2>{artist.name}</h2>
+              </div>
+            ))}
+          </div>
+        ))}
     </div>
   );
 };
