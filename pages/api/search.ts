@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, getCsrfToken } from 'next-auth/react';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getSession({ req });
-
-  console.log('session', session);
 
   if (!session) {
     res.status(401).json({ error: 'Unauthorized' });
@@ -13,8 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const accessToken = (session.user as { accessToken: string }).accessToken; // Please don't do this. I'll fix it later.
 
-  // Only allow Post requests
-  if (req.method !== 'POST') {
+  // Only allow GET requests
+  if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
@@ -22,18 +23,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Use the Spotify Web API to search for artists or tracks.
   // The type of search is determined by the type parameter.
   // Allowed values: "album", "artist", "playlist", "track", "show", "episode", "audiobook"
-  const { query, type } = req.body;
-  console.log('query', query);
-  console.log('type', type);
+  const { query, type } = req.query;
 
   // Get 10 results based on the search query and type¨
   try {
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=10`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=10`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
     const data = await response.json();
     res.status(200).json(data);

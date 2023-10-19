@@ -1,9 +1,4 @@
-// A component that allows the user to search for artists and songs
-//
-
 import React from 'react';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 interface SearchComponentProps {
@@ -36,7 +31,12 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSearch }) => {
       </div>
       <div>
         <label>
-          <input type="radio" value="track" checked={searchType === 'track'} onChange={() => setSearchType('track')} />
+          <input
+            type="radio"
+            value="track"
+            checked={searchType === 'track'}
+            onChange={() => setSearchType('track')}
+          />
           Track
         </label>
         <label>

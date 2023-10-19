@@ -9,91 +9,29 @@ const inter = Inter({ subsets: ['latin'] });
 export default function Home() {
   const { data: session, status } = useSession();
 
-  console.log('session', session);
-
-  const handleSearch = async () => {
+  const handleSearch = async (query: string, searchType: string) => {
     if (!session) return;
-    const accessToken = (session.user as { accessToken: string }).accessToken; // Please don't do this. I'll fix it later.
-    const query = 'coldplay'; // Replace with your search query
-    const type = 'artist'; // Replace with your search type
+    console.log(query, searchType);
 
-    try {
-      const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=10`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response.status === 200) {
-        const data = await response.json();
-        console.log('data', data);
-      } else if (response.status === 401) {
-        // Handle unauthorized access
-        console.error('Unauthorized access');
-      } else if (response.status === 405) {
-        // Handle method not allowed
-        console.error('Method not allowed');
-      } else {
-        // Handle other errors
-        console.error('Internal server error');
-      }
-    } catch (error) {
-      // Handle network errors
-      console.error('Network error', error);
+    // Fetch results from /api/search with GET request. Then handle errors.
+    const res = await fetch(`/api/search?query=${query}&type=${searchType}`);
+    const data = await res.json();
+    if (!res.ok) {
+      console.error(data);
+      return;
     }
+    console.log(data);
+    return data;
   };
 
-  // const handleSearch = async (query: string, searchType: string) => {
-  //   console.log(query, searchType);
-
-  //   // search for results using the search endpoint
-  //   // Use fetch with the post method to send the query to the search endpoint
-  //   // The search endpoint is located at /api/search
-  //   // The search endpoint expects a JSON body with the following properties:
-  //   // - query: the search query
-  //   // - type: the type of search (either track or artist)
-
-  //   const results = await fetch('/api/search', {
-  //     method: 'POST',
-  //     body: JSON.stringify({
-  //       query: query,
-  //       type: searchType,
-  //     }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   });
-
-  //   console.log('results', results);
-
-  //   // If the response is not okay, throw an error
-  //   // if (!results.ok) {
-  //   //   throw new Error('An error occurred while searching');
-  //   // }
-
-  //   // Otherwise, get the JSON from the response
-  //   const data = await results.json();
-
-  //   // Log the data
-  //   console.log(data);
-
-  //   // handle errors
-  // };
-
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
+    <main
+      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+    >
       <LoginButton />
-      {/* <SearchBar onSearch={handleSearch} /> */}
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          handleSearch();
-        }}
-      >
-        Search
-      </button>
+      <SearchBar onSearch={handleSearch} />
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
+      {/* <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
         <Image
           className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
           src="/next.svg"
@@ -172,7 +110,7 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
-      </div>
+      </div> */}
     </main>
   );
 }
