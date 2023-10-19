@@ -14,14 +14,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Define the request parameters for getting song recommendations
-    const seedArtists = '4NHQUGzhtTLFvgF5SZesLK'; // Example artist ID
-    const seedGenres = 'rock'; // Example genre
-    const seedTracks = '0c6xIDDpzE81m2q797ordA'; // Example track ID
+    // We're allowed to use a combination of 5 total seeds (artists, genres, and tracks)
+    const seedArtists = '4gzpq5DPGxSnKTe4SA8HAU,3hozsZ9hqNq7CoBGYNlFTz';
+    // const seedGenres = 'rock'; // Genre seeds are only needed if artists and tracks are not provided.
+    const seedTracks = '6P2Y4KnF2x8uwZV2cZWA8t,7iMQChXFK33TS49QWhE4tt,4Oih3RDrSFg3afaOphBVuy';
+    // const seedTracks = '6P2Y4KnF2x8uwZV2cZWA8t,7iMQChXFK33TS49QWhE4tt,4Oih3RDrSFg3afaOphBVuy,3VMK6tAjOT4INvBdZOtB9J,4PTtFQIiFtNNbbX4Ym5RCD,5hiZJE6Fg14Wao6EJ0KUC8';
 
     const response = await axios.get('https://api.spotify.com/v1/recommendations', {
       params: {
         seed_artists: seedArtists,
-        seed_genres: seedGenres,
+        // seed_genres: seedGenres,
         seed_tracks: seedTracks,
         limit: 10, // You can adjust the number of recommendations
       },

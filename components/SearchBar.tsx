@@ -9,10 +9,7 @@ interface SearchComponentProps {
   searchType: 'track' | 'artist';
 }
 
-const SearchBar: React.FC<SearchComponentProps> = ({
-  onSelectItem,
-  searchType,
-}) => {
+const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem, searchType }) => {
   const { data: session, status } = useSession();
   const [query, setQuery] = useState<string>('');
   // const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -49,8 +46,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({
     if (!session) return;
     console.log(query, searchType);
 
-    const data =
-      searchType === 'track' ? await getTrackData() : await getArtistData();
+    const data = searchType === 'track' ? await getTrackData() : await getArtistData();
 
     console.log('got data!11', data);
     if (!data) return;
@@ -63,11 +59,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({
       <div>
         <input
           type="text"
-          placeholder={
-            searchType === 'track'
-              ? 'Search for a track'
-              : 'Search for an artist'
-          }
+          placeholder={searchType === 'track' ? 'Search for a track' : 'Search for an artist'}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="input input-bordered w-full max-w-xs"
