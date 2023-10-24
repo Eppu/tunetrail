@@ -17,11 +17,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('recommendations accessToken is:', accessToken);
 
   try {
-    // Define the request parameters for getting song recommendations
     // We're allowed to use a combination of 5 total seeds (artists, genres, and tracks)
     // const seedArtists = '4gzpq5DPGxSnKTe4SA8HAU,3hozsZ9hqNq7CoBGYNlFTz';
-    // // const seedGenres = 'rock'; // Genre seeds are only needed if artists and tracks are not provided.
     // const seedTracks = '6P2Y4KnF2x8uwZV2cZWA8t,7iMQChXFK33TS49QWhE4tt,4Oih3RDrSFg3afaOphBVuy';
+    // // const seedGenres = 'rock'; // Genre seeds are only needed if artists and tracks are not provided.
 
     const seedArtists = req.query.artists as string;
     const seedTracks = req.query.tracks as string;

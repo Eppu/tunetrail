@@ -4,6 +4,8 @@ import LoginButton from '@/components/login-btn';
 import SearchBar from '@/components/SearchBar';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import Navbar from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,19 +24,26 @@ export default function Home() {
     // get the ids of the selected songs and artists
     const songIds = selectedSongs.map((song) => song.id);
     const artistIds = selectedArtists.map((artist) => artist.id);
-    // call api/recommendations
-    // use artists and tracks as query params.
-    // both should be comma separated lists of ids
+
+    if (songIds.length === 0 && artistIds.length === 0) {
+      console.log('no songs or artists selected');
+      return;
+    }
     console.log('songsids', songIds);
     console.log('artistids', artistIds);
     const res = await fetch(`/api/recommendations?artists=${artistIds}&tracks=${songIds}`);
     const data = await res.json();
+    if (!res.ok) {
+      console.log('error', data);
+      return;
+    }
     console.log('data', data);
     setRecommendations(data.tracks);
   };
 
   return (
     <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
+      {/* <Navbar /> */}
       <LoginButton />
       <div className="flex gap-5 items-center justify-center w-full">
         <SearchBar onSelectItem={handleSelect} searchType="track" />
@@ -75,6 +84,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      {/* <Footer /> */}
     </main>
   );
 }
