@@ -7,6 +7,8 @@ import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
+import ArtistCard from '@/components/ArtistCard';
+import TrackCard from '@/components/TrackCard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,6 +21,12 @@ export default function Home() {
 
   const handleSelect = (item: any, type: string) => {
     type === 'track' ? setSelectedSongs([...selectedSongs, item]) : setSelectedArtists([...selectedArtists, item]);
+  };
+
+  const handleRemove = (item: any, type: string) => {
+    type === 'track'
+      ? setSelectedSongs(selectedSongs.filter((song) => song.id !== item.id))
+      : setSelectedArtists(selectedArtists.filter((artist) => artist.id !== item.id));
   };
 
   const getRecommendations = async () => {
@@ -67,10 +75,12 @@ export default function Home() {
           >
             <h2>selected songs</h2>
             {selectedSongs.map((song) => (
-              <div key={song.id}>
-                <h2>{song.name}</h2>
-                <p>{song.artists[0].name}</p>
-              </div>
+              <TrackCard key={song.id} onRemoveItem={handleRemove} track={song} />
+
+              // <div key={song.id}>
+              //   <h2>{song.name}</h2>
+              //   <p>{song.artists[0].name}</p>
+              // </div>
             ))}
           </div>
         </div>
@@ -82,9 +92,10 @@ export default function Home() {
           >
             <h2>selected artists</h2>
             {selectedArtists.map((artist) => (
-              <div key={artist.id}>
-                <h2>{artist.name}</h2>
-              </div>
+              <ArtistCard key={artist.id} onRemoveItem={handleRemove} artist={artist} />
+              // <div key={artist.id}>
+              //   <h2>{artist.name}</h2>
+              // </div>
             ))}
           </div>
         </div>
