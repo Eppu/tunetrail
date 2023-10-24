@@ -19,10 +19,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // Define the request parameters for getting song recommendations
     // We're allowed to use a combination of 5 total seeds (artists, genres, and tracks)
-    const seedArtists = '4gzpq5DPGxSnKTe4SA8HAU,3hozsZ9hqNq7CoBGYNlFTz';
-    // const seedGenres = 'rock'; // Genre seeds are only needed if artists and tracks are not provided.
-    const seedTracks = '6P2Y4KnF2x8uwZV2cZWA8t,7iMQChXFK33TS49QWhE4tt,4Oih3RDrSFg3afaOphBVuy';
-    // const seedTracks = '6P2Y4KnF2x8uwZV2cZWA8t,7iMQChXFK33TS49QWhE4tt,4Oih3RDrSFg3afaOphBVuy,3VMK6tAjOT4INvBdZOtB9J,4PTtFQIiFtNNbbX4Ym5RCD,5hiZJE6Fg14Wao6EJ0KUC8';
+    // const seedArtists = '4gzpq5DPGxSnKTe4SA8HAU,3hozsZ9hqNq7CoBGYNlFTz';
+    // // const seedGenres = 'rock'; // Genre seeds are only needed if artists and tracks are not provided.
+    // const seedTracks = '6P2Y4KnF2x8uwZV2cZWA8t,7iMQChXFK33TS49QWhE4tt,4Oih3RDrSFg3afaOphBVuy';
+
+    const seedArtists = req.query.artists as string;
+    const seedTracks = req.query.tracks as string;
+
+    if (seedArtists.split(',').length + seedTracks.split(',').length > 5) {
+      // return error, since Spotify only allows 5 seeds
+      res.status(400).json({ error: 'Too many seeds' });
+      return;
+    }
 
     const response = await axios.get('https://api.spotify.com/v1/recommendations', {
       params: {
