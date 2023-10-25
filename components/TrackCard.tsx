@@ -17,7 +17,7 @@ const TrackCard: React.FC<TrackCardProps> = ({ onRemoveItem, track }) => {
         </h2>
       </div>
       <div
-        className="absolute inset-0 card bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 flex items-center justify-center backdrop-blur cursor-pointer"
+        className="absolute inset-0 card bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center backdrop-blur cursor-pointer"
         onClick={() => onRemoveItem(track, 'track')}
       >
         <p className="text-white text-2xl">Remove</p>
