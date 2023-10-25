@@ -6,11 +6,11 @@ interface SearchComponentProps {
   // onSearch: (query: string, searchType: string) => void;
   // search results
   onSelectItem: (item: any, type: 'track' | 'artist') => void;
-  searchType: 'track' | 'artist';
 }
 
-const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem, searchType }) => {
+const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
   const { data: session, status } = useSession();
+  const [searchType, setSearchType] = useState<'track' | 'artist'>('track'); // ['track', 'artist'
   const [query, setQuery] = useState<string>('');
   // const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any>({});
@@ -54,85 +54,44 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem, searchType })
     setSearchResults(data);
   };
 
+  const handleSearchTypeChange = () => {
+    setSearchType(searchType === 'track' ? 'artist' : 'track');
+  };
+
   return (
     <div>
-      <div>
+      <div className="flex gap-2 sm:flex-column">
         <input
           type="text"
           placeholder={searchType === 'track' ? 'Search for a track' : 'Search for an artist'}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="input input-bordered w-full max-w-xs"
+          className="input input-bordered  max-w-xl flex-grow"
         />
+        <div className="join">
+          <input
+            className="join-item btn"
+            type="radio"
+            name="options"
+            aria-label="Artist"
+            checked={searchType === 'artist'}
+            onChange={() => handleSearchTypeChange()}
+          />
+          <input
+            className="join-item btn"
+            type="radio"
+            name="options"
+            aria-label="Track"
+            checked={searchType === 'track'}
+            onChange={() => handleSearchTypeChange()}
+          />
+        </div>
       </div>
       <button className="btn" onClick={handleSearch}>
         Search
       </button>
 
-      {/* <h3 className="mb-5 text-lg font-medium text-gray-900 dark:text-white">What are you searching for?</h3>
-      <ul className="grid w-full gap-6 md:grid-cols-2">
-        <li>
-          <input
-            type="radio"
-            id="hosting-small"
-            name="hosting"
-            value="hosting-small"
-            className="hidden peer"
-            required
-          />
-          <label
-            htmlFor="hosting-small"
-            className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
-            <div className="block">
-              <div className="w-full text-lg font-semibold">0-50 MB</div>
-              <div className="w-full">Good for small websites</div>
-            </div>
-            <svg
-              className="w-5 h-5 ml-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </label>
-        </li>
-        <li>
-          <input type="radio" id="hosting-big" name="hosting" value="hosting-big" className="hidden peer" />
-          <label
-            htmlFor="hosting-big"
-            className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
-            <div className="block">
-              <div className="w-full text-lg font-semibold">500-1000 MB</div>
-              <div className="w-full">Good for large websites</div>
-            </div>
-            <svg
-              className="w-5 h-5 ml-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </label>
-        </li>
-      </ul> */}
+      {/* <h3 className="mb-5 text-lg font-medium text-gray-900 dark:text-white">What are you searching for?</h3> */}
 
       {Object.keys(searchResults).length !== 0 &&
         (!!searchResults.tracks ? (
