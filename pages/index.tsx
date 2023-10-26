@@ -56,7 +56,7 @@ export default function Home() {
 
       {/* Main content */}
       <main className="container mx-auto mt-4 p-4">
-        <div className="flex gap-5 items-center justify-center w-full ">
+        <div className="bg-cyan-500 flex justify-center">
           <SearchBar onSelectItem={handleSelect} />
           {/* <SearchBar onSelectItem={handleSelect} searchType="artist" /> */}
         </div>
