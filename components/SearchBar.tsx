@@ -2,20 +2,13 @@ import React from 'react';
 import { useState, useMemo, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import debounce from 'lodash.debounce';
+import { SearchType, TSearchType } from '@/types';
 
 interface SearchComponentProps {
   // onSearch: (query: string, searchType: string) => void;
   // search results
-  onSelectItem: (item: any, type: 'track' | 'artist') => void;
+  onSelectItem: (item: any, type: TSearchType) => void;
 }
-
-enum SearchType {
-  Track = 'track',
-  Artist = 'artist',
-}
-
-// create type for search type
-type TSearchType = SearchType.Track | SearchType.Artist;
 
 const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
   const { data: session, status } = useSession();
@@ -90,7 +83,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
         <input
           type="text"
           placeholder={
-            searchType === 'track'
+            searchType === SearchType.Track
               ? 'Search for a track'
               : 'Search for an artist'
           }
@@ -104,7 +97,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
             type="radio"
             name="options"
             aria-label="Artist"
-            checked={searchType === 'artist'}
+            checked={searchType === SearchType.Artist}
             onChange={() => handleSearchTypeChange()}
           />
           <input
@@ -112,7 +105,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
             type="radio"
             name="options"
             aria-label="Track"
-            checked={searchType === 'track'}
+            checked={searchType === SearchType.Track}
             onChange={() => handleSearchTypeChange()}
           />
         </div>

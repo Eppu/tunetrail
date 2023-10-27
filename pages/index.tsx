@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
-import LoginButton from '@/components/login-btn';
 import SearchBar from '@/components/SearchBar';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import ArtistCard from '@/components/ArtistCard';
 import TrackCard from '@/components/TrackCard';
+import { SearchType } from '@/types';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,13 +20,17 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState<any[]>([]);
 
   const handleSelect = (item: any, type: string) => {
-    type === 'track' ? setSelectedSongs([...selectedSongs, item]) : setSelectedArtists([...selectedArtists, item]);
+    type === SearchType.Track
+      ? setSelectedSongs([...selectedSongs, item])
+      : setSelectedArtists([...selectedArtists, item]);
   };
 
   const handleRemove = (item: any, type: string) => {
-    type === 'track'
+    type === SearchType.Track
       ? setSelectedSongs(selectedSongs.filter((song) => song.id !== item.id))
-      : setSelectedArtists(selectedArtists.filter((artist) => artist.id !== item.id));
+      : setSelectedArtists(
+          selectedArtists.filter((artist) => artist.id !== item.id)
+        );
   };
 
   const getRecommendations = async () => {
@@ -40,7 +44,9 @@ export default function Home() {
     }
     console.log('songsids', songIds);
     console.log('artistids', artistIds);
-    const res = await fetch(`/api/recommendations?artists=${artistIds}&tracks=${songIds}`);
+    const res = await fetch(
+      `/api/recommendations?artists=${artistIds}&tracks=${songIds}`
+    );
     const data = await res.json();
     if (!res.ok) {
       console.log('error', data);
@@ -66,7 +72,8 @@ export default function Home() {
         >
           Button
         </button>
-        {recommendations.length > 0 && JSON.stringify(recommendations.map((rec) => rec.name))}
+        {recommendations.length > 0 &&
+          JSON.stringify(recommendations.map((rec) => rec.name))}
         <div className="flex gap-5 items-center justify-center w-full">
           <div
             className="flex flex-col gap-5 items-center justify-center w-1/2"
@@ -74,7 +81,11 @@ export default function Home() {
           >
             <h2>selected songs</h2>
             {selectedSongs.map((song) => (
-              <TrackCard key={song.id} onRemoveItem={handleRemove} track={song} />
+              <TrackCard
+                key={song.id}
+                onRemoveItem={handleRemove}
+                track={song}
+              />
 
               // <div key={song.id}>
               //   <h2>{song.name}</h2>
@@ -91,7 +102,11 @@ export default function Home() {
           >
             <h2>selected artists</h2>
             {selectedArtists.map((artist) => (
-              <ArtistCard key={artist.id} onRemoveItem={handleRemove} artist={artist} />
+              <ArtistCard
+                key={artist.id}
+                onRemoveItem={handleRemove}
+                artist={artist}
+              />
               // <div key={artist.id}>
               //   <h2>{artist.name}</h2>
               // </div>
