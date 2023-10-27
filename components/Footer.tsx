@@ -1,6 +1,6 @@
 export const Footer: React.FC = () => {
   return (
-    <footer className="footer footer-center p-4 bg-base-300 text-base-content">
+    <footer className="footer footer-center p-4 bg-base-300 text-base-content mt-auto">
       <aside className="flex gap-6">
         <p>Created with 🎶 by Eetu Eskelinen</p>
         {/* <p>&copy; {new Date().getFullYear()} - All rights reserved </p> */}
