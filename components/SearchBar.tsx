@@ -56,10 +56,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
     if (!session) return;
     console.log(query, searchType);
 
-    const data =
-      searchType === SearchType.Track
-        ? await getTrackData(query)
-        : await getArtistData(query);
+    const data = searchType === SearchType.Track ? await getTrackData(query) : await getArtistData(query);
 
     console.log('got data!11', data);
     if (!data) return;
@@ -72,25 +69,52 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
   };
 
   const handleSearchTypeChange = () => {
-    setSearchType(
-      searchType === SearchType.Track ? SearchType.Artist : SearchType.Track
-    );
+    setSearchType(searchType === SearchType.Track ? SearchType.Artist : SearchType.Track);
   };
 
   return (
-    <div>
-      <div className="flex gap-2 sm:flex-column">
-        <input
-          type="text"
-          placeholder={
-            searchType === SearchType.Track
-              ? 'Search for a track'
-              : 'Search for an artist'
-          }
-          // value={query}
-          onChange={(e) => handleQueryChange(e)}
-          className="input input-bordered  max-w-xl flex-grow"
-        />
+    <div className="flex w-full">
+      <div className="flex gap-2 flex-grow justify-center">
+        <div className="flex flex-col flex-grow max-w-xl">
+          <input
+            type="text"
+            placeholder={searchType === SearchType.Track ? 'Search for a track' : 'Search for an artist'}
+            // value={query}
+            onChange={(e) => handleQueryChange(e)}
+            className="input input-bordered  max-w-xl flex-grow"
+          />
+          {Object.keys(searchResults).length !== 0 &&
+            (!!searchResults.tracks ? (
+              <div>
+                {searchResults.tracks.items.map((track: any) => (
+                  <div
+                    key={track.id}
+                    onClick={() => {
+                      onSelectItem(track, searchType), setSearchResults({});
+                    }}
+                    className="flex flex-col items-center justify-center p-4 border border-gray-300 rounded-md cursor-pointer"
+                  >
+                    <h2>{track.name}</h2>
+                    <p>{track.artists[0].name}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>
+                {searchResults.artists.items.map((artist: any) => (
+                  <div
+                    key={artist.id}
+                    onClick={() => {
+                      onSelectItem(artist, searchType), setSearchResults({});
+                    }}
+                    className="flex flex-col items-center justify-center p-4 border border-gray-300 rounded-md cursor-pointer"
+                  >
+                    <h2>{artist.name}</h2>
+                  </div>
+                ))}
+              </div>
+            ))}
+        </div>
         <div className="join">
           <input
             className="join-item btn"
@@ -115,38 +139,6 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
       </button> */}
 
       {/* <h3 className="mb-5 text-lg font-medium text-gray-900 dark:text-white">What are you searching for?</h3> */}
-
-      {Object.keys(searchResults).length !== 0 &&
-        (!!searchResults.tracks ? (
-          <div>
-            {searchResults.tracks.items.map((track: any) => (
-              <div
-                key={track.id}
-                onClick={() => {
-                  onSelectItem(track, searchType), setSearchResults({});
-                }}
-                className="flex flex-col items-center justify-center p-4 border border-gray-300 rounded-md cursor-pointer"
-              >
-                <h2>{track.name}</h2>
-                <p>{track.artists[0].name}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div>
-            {searchResults.artists.items.map((artist: any) => (
-              <div
-                key={artist.id}
-                onClick={() => {
-                  onSelectItem(artist, searchType), setSearchResults({});
-                }}
-                className="flex flex-col items-center justify-center p-4 border border-gray-300 rounded-md cursor-pointer"
-              >
-                <h2>{artist.name}</h2>
-              </div>
-            ))}
-          </div>
-        ))}
     </div>
   );
 };
