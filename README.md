@@ -1,8 +1,6 @@
+## This project is currently in a WIP state. Expect breaking changes on the main branch.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-
-https://www.reddit.com/r/nextjs/comments/10o6aup/next_auth_spotify_reauthentication_access_token/?rdt=33914
-
 
 ## Getting Started
 
