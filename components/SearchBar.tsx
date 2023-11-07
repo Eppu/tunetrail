@@ -56,7 +56,10 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
     if (!session) return;
     console.log(query, searchType);
 
-    const data = searchType === SearchType.Track ? await getTrackData(query) : await getArtistData(query);
+    const data =
+      searchType === SearchType.Track
+        ? await getTrackData(query)
+        : await getArtistData(query);
 
     console.log('got data!11', data);
     if (!data) return;
@@ -69,7 +72,9 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
   };
 
   const handleSearchTypeChange = () => {
-    setSearchType(searchType === SearchType.Track ? SearchType.Artist : SearchType.Track);
+    setSearchType(
+      searchType === SearchType.Track ? SearchType.Artist : SearchType.Track
+    );
   };
 
   return (
@@ -78,8 +83,13 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
         <div className="flex flex-col flex-grow max-w-xl">
           <input
             type="text"
-            placeholder={searchType === SearchType.Track ? 'Search for a track' : 'Search for an artist'}
+            placeholder={
+              searchType === SearchType.Track
+                ? 'Search for a track'
+                : 'Search for an artist'
+            }
             // value={query}
+            autoFocus={true}
             onChange={(e) => handleQueryChange(e)}
             className="input input-bordered  max-w-xl flex-grow"
           />
