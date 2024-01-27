@@ -112,6 +112,17 @@ export default function Home() {
             {isSearching ? <span className="loading loading-dots loading-xs"></span> : 'Search'}
           </button>
         </div>
+        {recommendations.length > 0 && (
+          // for each recommendation, display a card with the song info
+          <div className="flex flex-col gap-5 items-center justify-center w-full pt-6">
+            <h2>Recommendations</h2>
+            <div className="flex flex-col gap-5 items-center justify-center w-full max-md:flex-col max-md:gap-1 max-md:items-start max-md:justify-start">
+              {recommendations.map((track) => (
+                <RecommendationCard key={track.id} track={track} />
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />
