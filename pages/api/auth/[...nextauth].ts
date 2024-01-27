@@ -42,7 +42,7 @@ export const authOptions = {
     SpotifyProvider({
       clientId: SPOTIFY_CLIENT_ID,
       clientSecret: SPOTIFY_CLIENT_SECRET,
-      // get scopes:
+      // get scopes, quite extensive for now:
       // user-read-email
       // user-read-private
       // playlist-read-private

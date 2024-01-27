@@ -11,9 +11,9 @@ export const Footer: React.FC = () => {
             rel="noopener noreferrer"
           >
             Eetu Eskelinen
-          </a>
+          </a>{' '}
+          in 2024
         </p>
-        <p>Created with 🎶 by Eetu Eskelinen</p>
         {/* <p>&copy; {new Date().getFullYear()} - All rights reserved </p> */}
       </aside>
     </footer>
