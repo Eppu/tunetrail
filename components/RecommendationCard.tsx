@@ -8,9 +8,7 @@ interface RecommendationCardProps {
 
 const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const artistString = track.artists
-    .map((artist: any) => artist.name)
-    .join(', ');
+  const artistString = track.artists.map((artist: any) => artist.name).join(', ');
   const trackName = track.name;
   const previewUrl = track.preview_url;
   const previewAvailable = previewUrl !== null;
@@ -34,14 +32,10 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
   };
 
   return (
-    <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center">
+    <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center max-xl:w-full ">
       <audio ref={audioRef} src={previewUrl} />
       <figure className="w-14">
-        <img
-          className="mask mask-squircle"
-          src={track.album.images[0].url}
-          alt={track.name}
-        />
+        <img className="mask mask-squircle" src={track.album.images[0].url} alt={track.name} />
       </figure>
       <h3>{artistString}</h3>
       <p>{trackName}</p>
