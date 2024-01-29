@@ -12,7 +12,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="navbar bg-base-100 mb-2 text-neutral-content rounded-box shadow-lg">
+    <header className="navbar bg-base-100 mb-2 text-neutral dark:text-neutral-content rounded-box shadow-lg">
       <div className="flex-1">
         <h1 className="btn btn-ghost normal-case text-xl">TuneTrail</h1>
       </div>
