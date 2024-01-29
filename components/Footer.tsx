@@ -14,7 +14,6 @@ export const Footer: React.FC = () => {
           </a>{' '}
           in 2024
         </p>
-        {/* <p>&copy; {new Date().getFullYear()} - All rights reserved </p> */}
       </aside>
     </footer>
   );

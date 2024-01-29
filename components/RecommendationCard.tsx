@@ -6,7 +6,9 @@ interface RecommendationCardProps {
 
 const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const artistString = track.artists.map((artist: any) => artist.name).join(', ');
+  const artistString = track.artists
+    .map((artist: any) => artist.name)
+    .join(', ');
   const trackName = track.name;
   const previewUrl = track.preview_url;
 
@@ -33,7 +35,13 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
       <audio ref={audioRef} src={previewUrl} />
       <h3>{artistString}</h3>
       <p>{trackName}</p>
-      <button className="btn btn-circle" onClick={handlePlayPreview}>
+
+      <button
+        // if previewUrl is null, disable the button and show a tooltip
+        className="btn btn-circle bg-base-300 hover:bg-base-200 text-base-content"
+        onClick={handlePlayPreview}
+        disabled={!previewUrl}
+      >
         {isPlaying ? (
           <svg
             className="w-6 h-6 text-gray-800 dark:text-white"
@@ -50,7 +58,9 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
           </svg>
         ) : (
           <svg
-            className="w-6 h-6 text-gray-800 dark:text-white"
+            className={`w-6 h-6 text-gray-800 ${
+              !previewUrl ? 'dark:text-slate-500' : 'dark:text-white'
+            }`}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
