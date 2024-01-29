@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { PlayIcon } from '@/components/icons/PlayIcon';
+import { PauseIcon } from '@/components/icons/PauseIcon';
 
 interface RecommendationCardProps {
   track: any;
@@ -11,6 +13,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
     .join(', ');
   const trackName = track.name;
   const previewUrl = track.preview_url;
+  const previewAvailable = previewUrl !== null;
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -31,8 +34,15 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
   };
 
   return (
-    <div className="group card card-side bg-base-100 shadow-xl w-auto h-50 relative">
+    <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center">
       <audio ref={audioRef} src={previewUrl} />
+      <figure className="w-14">
+        <img
+          className="mask mask-squircle"
+          src={track.album.images[0].url}
+          alt={track.name}
+        />
+      </figure>
       <h3>{artistString}</h3>
       <p>{trackName}</p>
 
@@ -40,42 +50,10 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
         // if previewUrl is null, disable the button and show a tooltip
         className="btn btn-circle bg-base-300 hover:bg-base-200 text-base-content"
         onClick={handlePlayPreview}
-        disabled={!previewUrl}
+        disabled={!previewAvailable}
       >
-        {isPlaying ? (
-          <svg
-            className="w-6 h-6 text-gray-800 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8 5a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H8Zm7 0a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1Z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        ) : (
-          <svg
-            className={`w-6 h-6 text-gray-800 ${
-              !previewUrl ? 'dark:text-slate-500' : 'dark:text-white'
-            }`}
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        )}
+        {isPlaying ? <PauseIcon /> : <PlayIcon disabled={!previewAvailable} />}
       </button>
-
-      {/* <button disabled={isPlaying}>{isPlaying ? 'Playing...' : 'Play Preview'}</button> */}
     </div>
   );
 };
