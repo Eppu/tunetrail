@@ -1,16 +1,14 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { PlayIcon } from '@/components/icons/PlayIcon';
 import { PauseIcon } from '@/components/icons/PauseIcon';
 
 interface RecommendationCardProps {
   track: any;
-  onClick?: () => void;
+  volume?: number;
 }
 
-//RecommendationCard is a JSX element
-const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, onClick }) => {
+const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, volume }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(50);
   const artistString = track.artists.map((artist: any) => artist.name).join(', ');
   const trackName = track.name;
   const previewUrl = track.preview_url;
@@ -18,9 +16,30 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, onClick 
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // Don't really like using useEffect for this, but oh well...
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (volume) {
+      audio.volume = volume;
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.onended = () => {
+      setIsPlaying(false);
+    };
+  }, []);
+
   const handlePlayPreview = () => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    audio.volume = volume || 0.5;
 
     if (isPlaying) {
       setIsPlaying(false);
@@ -34,13 +53,6 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, onClick 
     return;
   };
 
-  const handleVolumeChange = (e: any) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.volume = e.target.value / 100;
-  };
-
   return (
     <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center max-xl:w-full ">
       <audio ref={audioRef} src={previewUrl} />
@@ -49,17 +61,6 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, onClick 
       </figure>
       <h3>{artistString}</h3>
       <p>{trackName}</p>
-      {/* <input
-        type="range"
-        min={0}
-        max="100"
-        value={volume}
-        className="range range-xs"
-        onChange={(e) => {
-          setVolume(Number(e.target.value));
-          handleVolumeChange(e);
-        }}
-      /> */}
       <button
         // if previewUrl is null, disable the button and show a tooltip
         className="btn btn-circle bg-base-300 hover:bg-base-200 text-base-content"
