@@ -8,6 +8,7 @@ import TrackCard from '@/components/TrackCard';
 import { SearchType } from '@/types';
 import RecommendationCard from '@/components/RecommendationCard';
 import { SearchButton } from '@/components/SearchButton';
+import RecommendationList from '@/components/RecommendationList';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -101,17 +102,7 @@ export default function Home() {
             )
           }
         </div>
-        {recommendations.length > 0 && (
-          // for each recommendation, display a card with the song info
-          <div className="flex flex-col gap-5 items-center justify-center w-full pt-6">
-            <h2 className="text-2xl font-bold">Recommended songs</h2>
-            <div className="flex flex-col gap-5 items-center justify-center w-full max-md:flex-col max-md:gap-1 max-md:items-start max-md:justify-start">
-              {recommendations.map((track) => (
-                <RecommendationCard key={track.id} track={track} />
-              ))}
-            </div>
-          </div>
-        )}
+        <RecommendationList recommendations={recommendations} />
       </main>
 
       <Footer />

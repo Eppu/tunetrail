@@ -4,10 +4,13 @@ import { PauseIcon } from '@/components/icons/PauseIcon';
 
 interface RecommendationCardProps {
   track: any;
+  onClick?: () => void;
 }
 
-const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
+//RecommendationCard is a JSX element
+const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, onClick }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(50);
   const artistString = track.artists.map((artist: any) => artist.name).join(', ');
   const trackName = track.name;
   const previewUrl = track.preview_url;
@@ -31,6 +34,13 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
     return;
   };
 
+  const handleVolumeChange = (e: any) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.volume = e.target.value / 100;
+  };
+
   return (
     <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center max-xl:w-full ">
       <audio ref={audioRef} src={previewUrl} />
@@ -39,7 +49,17 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track }) => {
       </figure>
       <h3>{artistString}</h3>
       <p>{trackName}</p>
-
+      {/* <input
+        type="range"
+        min={0}
+        max="100"
+        value={volume}
+        className="range range-xs"
+        onChange={(e) => {
+          setVolume(Number(e.target.value));
+          handleVolumeChange(e);
+        }}
+      /> */}
       <button
         // if previewUrl is null, disable the button and show a tooltip
         className="btn btn-circle bg-base-300 hover:bg-base-200 text-base-content"
