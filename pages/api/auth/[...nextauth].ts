@@ -10,7 +10,9 @@ const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
-    const basicAuth = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64');
+    const basicAuth = Buffer.from(
+      `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
+    ).toString('base64');
     const { data } = await axios.post(
       SPOTIFY_REFRESH_TOKEN_URL,
       {
@@ -53,7 +55,15 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, user }: { token: JWT; account: any; user: any }) {
+    async jwt({
+      token,
+      account,
+      user,
+    }: {
+      token: JWT;
+      account: any;
+      user: any;
+    }) {
       if (account && user) {
         return {
           accessToken: account.access_token,
@@ -72,7 +82,6 @@ export const authOptions = {
       session.accessToken = token.accessToken;
       session.error = token.error;
       session.user = token.user;
-      console.log('session is:', session);
       return session;
     },
   },

@@ -2,10 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import axios from 'axios';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getSession({ req });
-
-  console.log('recommendations session is:', session);
 
   if (!session || !session.accessToken) {
     res.status(401).json({ error: 'Unauthorized' });
@@ -13,8 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const accessToken = session.accessToken;
-
-  console.log('recommendations accessToken is:', accessToken);
 
   try {
     // We're allowed to use a combination of 5 total seeds (artists, genres, and tracks)
@@ -31,23 +30,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    const response = await axios.get('https://api.spotify.com/v1/recommendations', {
-      params: {
-        seed_artists: seedArtists,
-        // seed_genres: seedGenres,
-        seed_tracks: seedTracks,
-        limit: 10, // You can adjust the number of recommendations
-      },
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.get(
+      'https://api.spotify.com/v1/recommendations',
+      {
+        params: {
+          seed_artists: seedArtists,
+          // seed_genres: seedGenres,
+          seed_tracks: seedTracks,
+          limit: 10, // You can adjust the number of recommendations
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
     if (response.status === 200) {
       const recommendations = response.data;
       res.status(200).json(recommendations);
     } else {
-      res.status(response.status).json({ error: 'Failed to fetch recommendations' });
+      res
+        .status(response.status)
+        .json({ error: 'Failed to fetch recommendations' });
     }
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });

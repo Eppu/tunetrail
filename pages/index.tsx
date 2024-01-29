@@ -41,8 +41,7 @@ export default function Home() {
       console.log('no songs or artists selected');
       return;
     }
-    // console.log('songsids', songIds);
-    // console.log('artistids', artistIds);
+
     const res = await fetch(
       `/api/recommendations?artists=${artistIds}&tracks=${songIds}`
     );

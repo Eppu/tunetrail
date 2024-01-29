@@ -11,8 +11,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const accessToken = session.accessToken;
 
-  console.log('accessToken', accessToken);
-
   // Use the Spotify Web API to fetch the user's playlists
   try {
     const response = await fetch('https://api.spotify.com/v1/me/playlists', {
@@ -21,7 +19,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log('response', response);
 
     const data = await response.json();
     res.status(200).json(data);

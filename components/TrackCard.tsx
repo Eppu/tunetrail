@@ -6,8 +6,9 @@ interface TrackCardProps {
 }
 
 const TrackCard: React.FC<TrackCardProps> = ({ onRemoveItem, track }) => {
-  console.log(track);
-  const artistString = track.artists.map((artist: any) => artist.name).join(', ');
+  const artistString = track.artists
+    .map((artist: any) => artist.name)
+    .join(', ');
   return (
     <div className="group card card-side bg-base-100 shadow-xl w-auto h-50 relative">
       {/* <span className="badge badge-ghost badge-sm absolute -top-2 -right-2">
@@ -22,7 +23,11 @@ const TrackCard: React.FC<TrackCardProps> = ({ onRemoveItem, track }) => {
       </span> */}
       <div className="flex flex-row gap-6 px-4 py-2">
         <figure className="w-14">
-          <img className="mask mask-squircle" src={track.album.images[0].url} alt={track.name} />
+          <img
+            className="mask mask-squircle"
+            src={track.album.images[0].url}
+            alt={track.name}
+          />
         </figure>
         <h2 className="card-title">
           {artistString} - {track.name}

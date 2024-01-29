@@ -21,13 +21,11 @@ export async function getAccessToken() {
 }
 
 export const getUsersPlaylists = async (accessToken: string) => {
-  console.log('getting data from spotify');
   const response = await fetch(PLAYLISTS_ENDPOINT, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  console.log('got data from spotify', response);
   const data = await response.json();
   return data.items;
 };

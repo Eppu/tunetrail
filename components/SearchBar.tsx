@@ -21,7 +21,7 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
     const debouncedSearch = debounce(() => handleSearch(query), 300);
     debouncedSearch();
     return debouncedSearch.cancel;
-  }, [query]);
+  }, [query, searchType]);
 
   const getTrackData = async (query: string) => {
     const res = await fetch(`/api/search?query=${query}&type=track`);
@@ -54,14 +54,12 @@ const SearchBar: React.FC<SearchComponentProps> = ({ onSelectItem }) => {
     }
 
     if (!session) return;
-    console.log(query, searchType);
 
     const data =
       searchType === SearchType.Track
         ? await getTrackData(query)
         : await getArtistData(query);
 
-    console.log('got data!11', data);
     if (!data) return;
 
     setSearchResults(data);
