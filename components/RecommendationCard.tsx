@@ -55,7 +55,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, volume }
   };
 
   return (
-    <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center max-xl:w-full ">
+    <div className="group card card-side bg-base-100 shadow-xl w-2/5 h-50 flex justify-between items-center max-xl:w-full max-2xl:w-8/12">
       <audio ref={audioRef} src={previewUrl} />
       <figure className="w-14">
         <img className="mask mask-squircle" src={track.album.images[0].url} alt={track.name} />
@@ -66,9 +66,11 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, volume }
         target="blank"
         className="cursor-pointer hover:brightness-75 focus:outline-none focus:ring focus:ring-primary"
       >
-        <div className="flex flex-col justify-center items-center">
-          <p className="text-sm font-bold text-base-content">{artistString}</p>
-          <p className="text-md font-bold truncate max-w-md">{trackName}</p>
+        <div className="flex flex-col justify-center items-center w-max">
+          <p className="text-sm font-bold text-base-content max-sm:text-xs">{artistString}</p>
+          <p className="text-md font-bold max-sm:text-sm max-md:line-clamp-1 max-md:max-w-80 max-sm:max-w-52">
+            {trackName}
+          </p>
         </div>
       </Link>
       <button
