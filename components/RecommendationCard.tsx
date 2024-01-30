@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { PlayIcon } from '@/components/icons/PlayIcon';
 import { PauseIcon } from '@/components/icons/PauseIcon';
+import Link from 'next/link';
 
 interface RecommendationCardProps {
   track: any;
@@ -59,8 +60,17 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ track, volume }
       <figure className="w-14">
         <img className="mask mask-squircle" src={track.album.images[0].url} alt={track.name} />
       </figure>
-      <h3>{artistString}</h3>
-      <p>{trackName}</p>
+
+      <Link
+        href={track.external_urls.spotify}
+        target="blank"
+        className="cursor-pointer hover:brightness-75 focus:outline-none focus:ring focus:ring-primary"
+      >
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-sm font-bold text-base-content">{artistString}</p>
+          <p className="text-md font-bold truncate max-w-md">{trackName}</p>
+        </div>
+      </Link>
       <button
         // if previewUrl is null, disable the button and show a tooltip
         className="btn btn-circle bg-base-300 hover:bg-base-200 text-base-content"
