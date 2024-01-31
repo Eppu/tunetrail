@@ -1,10 +1,14 @@
-## This project is currently in a WIP state. Expect breaking changes on the main branch.
+## TuneTrail
+### Find new music based on _your_ interests
+![TuneTrail](https://github.com/Eppu/tunetrail/assets/12832880/a046e514-a7a1-462b-81b9-651e46ffbb0a)
+
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
+First, [create a new Spotify app](https://developer.spotify.com/) and create a `.env` file based on `.env.sample`. The Client ID and Secret for your Spotify app are needed, so that we can log the user in using their Spotify account and so that we can get data through Spotify's API.
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
